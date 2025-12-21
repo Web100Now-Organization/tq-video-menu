@@ -1,0 +1,104 @@
+extend type Query {
+    # Website endpoints (for /api/websites/v1)
+    positionsVideoMenu(tagsFilter: [String!]!): [PositionGroup!]!
+        @pluginAllowed(short_name: "tablq_positions_menu")
+        @requireRole(role: "website")
+    positionsVideoMenuSlider(
+        tagsFilter: [String!]!
+        currentID: ID!
+    ): [Position!]!
+        @pluginAllowed(short_name: "tablq_positions_menu")
+        @requireRole(role: "website")
+    randomVideoMain: [RandomVideoGroup!]!
+        @pluginAllowed(short_name: "tablq_positions_menu")
+        @requireRole(role: "website")
+    
+    # Platform endpoints (for /api/platform/v1)
+    platformPositionsVideoMenu(tagsFilter: [String!]!): [PositionGroup!]!
+        @pluginAllowed(short_name: "tablq_positions_menu")
+        @requireRole(role: "platform")
+    platformPositionsVideoMenuSlider(
+        tagsFilter: [String!]!
+        currentID: ID!
+    ): [Position!]!
+        @pluginAllowed(short_name: "tablq_positions_menu")
+        @requireRole(role: "platform")
+}
+
+type PositionGroup {
+    groupName: String!       # Наприклад, "Breakfast"
+    items: [Position!]!      # Масив усіх позицій у цій групі
+}
+
+type RandomPosition {
+    videoUrlHevc: String
+    urlPosterPrevVideo: String
+}
+
+type RandomVideoGroup {
+    tag: String!
+    items: [RandomPosition!]!
+}
+
+type Position {
+    id: ID                    # _id.$oid із MongoDB
+    name: String
+    groupName: String
+    description: String
+    prices: [Price]
+    unitOfMeasure: String     # наприклад "NONE", "g", "ml"
+    usesFractionalQuantity: Boolean
+    status: String            # "enabled" | "disabled"
+    contentAdvisories: [String]
+    spiceLevel: Int
+    nutritionInfo: NutritionInfo
+    imageUrls: ImageUrls
+    videoUrlHevc: String
+    urlPosterPrevVideo: String
+    modifierGroups: [ModifierGroup]
+    addons: [Addon]
+    preparationTime: Int
+    availability: String
+    tags: [String]
+    dietaryLabels: [String]
+    galleryUrls: [String!]!
+}
+
+type Price {
+    size: String    # опис варіанту, може бути порожнім рядком
+    price: Float
+}
+
+type NutritionInfo {
+    calories: Int
+    protein: Float
+    fat: Float
+    carbs: Float
+}
+
+type ImageUrls {
+    small: String
+    medium: String
+    large: String
+}
+
+type ModifierGroup {
+    groupName: String
+    options: [ModifierOption]
+}
+
+type ModifierOption {
+    name: String
+    price: Float
+    description: String
+    allowsDuplicates: Boolean
+    outOfStock: Boolean
+    isDefault: Boolean
+}
+
+type Addon {
+    name: String
+    price: Float
+    description: String
+}
+
